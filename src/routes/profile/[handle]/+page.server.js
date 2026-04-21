@@ -12,7 +12,17 @@ export async function load({ params }) {
 		const posts = (feed.feed ?? []).filter(item => item?.post?.uri);
 		return {profile, posts};
 	} catch(e) {
-		throw error(404, `Profile not found: ${params.handle}`);
+	    if (e.status === 401) {
+	      // session expired mid-request — reset and retry once
+	      session.session = null;
+	      await ensureSession(BSKY_HANDLE, BSKY_APP_PASSWORD);
+	      const data = await getFeed(feedUri);
+	      return { posts: data.feed ?? [] };
+	    }
+	    throw error(500, e.message);
+  }
+}
+
 
 	}
 }

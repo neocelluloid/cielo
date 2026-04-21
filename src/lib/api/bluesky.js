@@ -1,6 +1,6 @@
 import { BskyAgent, Agent, CredentialSession } from '@atproto/api';
 
-const session = new CredentialSession(new URL('https://bsky.social'))
+export const session = new CredentialSession(new URL('https://bsky.social'))
 export const agent = new Agent(session); 
 
 let sessionReady = false;
@@ -8,12 +8,23 @@ let handle       = '';
 let password     = '';
 
 export async function ensureSession(handle, password) {
-  if (sessionReady) return;
-  await session.login({
-    identifier: handle,
-    password,
-  });
-  sessionReady = true;
+  // re-authenticate if no session or token looks expired
+  if (session.session?.accessJwt) {
+    try {
+      // verify session is still valid by checking expiry
+      const payload = JSON.parse(
+        Buffer.from(session.session.accessJwt.split('.')[1], 'base64').toString()
+      );
+      const expiresAt = payload.exp * 1000;
+      const isExpired = Date.now() > expiresAt - 60_000; // 1 min buffer
+
+      if (!isExpired) return; // session still valid
+    } catch {
+      // token malformed — fall through to re-login
+    }
+  }
+
+  await session.login({ identifier: handle, password });
 }
 
 // export const agent = new BskyAgent({ service: 'https://bsky.social', });
