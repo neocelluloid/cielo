@@ -3,7 +3,7 @@
 A BlueSky feed reader built with SvelteKit, Svelte 5 runes, 
 and the AT Protocol API.
 
-**Live demo:** https://cielo.vercel.app
+**Live demo:** https://cielo-murex.vercel.app
 
 ## Stack
 - SvelteKit with +page.server.ts for server-side data fetching
