@@ -5,7 +5,6 @@
     { slug: 'discover',     name: 'Discover',             description: 'Top posts across BlueSky',          icon: '✦' },
     { slug: 'with-friends', name: 'Popular with friends', description: 'Posts popular in your network',     icon: '👥' },
     { slug: 'videos',       name: 'Video',                description: 'Videos from across BlueSky',        icon: '🎬' },
-    { slug: 'whats-hot',    name: "What's hot classic",   description: 'Classic hot feed',                  icon: '🔥' },
     { slug: 'best-of',      name: 'Best of follows',      description: 'Best posts from people you follow', icon: '⭐' },
   ];
 </script>
