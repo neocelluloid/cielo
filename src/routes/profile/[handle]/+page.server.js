@@ -20,9 +20,5 @@ export async function load({ params }) {
 	      return { posts: data.feed ?? [] };
 	    }
 	    throw error(500, e.message);
-  }
-}
-
-
-	}
+  	}
 }
