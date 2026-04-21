@@ -134,6 +134,15 @@
     height: 100%;
     object-fit: cover;
   }
+  img {
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid #e8e8e4;
+    display: block;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    object-position: center top;  /* favour top of image for portraits */
+  }
   .meta {
     flex: 1;
     min-width: 0;
