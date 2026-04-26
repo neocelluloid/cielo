@@ -1,5 +1,6 @@
 <script>
-  let { post } = $props();
+  let { post, expanded = false } = $props();
+
   const author = $derived(post.author ?? {});
   const record = $derived(post.record ?? {});
 
@@ -86,6 +87,14 @@
     <span>💬 {post.replyCount}</span>
     <span>🔁 {post.repostCount}</span>
     <span>❤️ {post.likeCount}</span>
+    {#if !expanded && post.replyCount > 0}
+      
+      <a href="/post/{encodeURIComponent(post.uri)}"
+        class="view-thread"
+      >
+        View thread →
+      </a>
+
   </footer>
 </article>
 
@@ -219,6 +228,27 @@
   object-fit: contain;
   background: #000;
 }
+  .post-link {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .post-link:hover .post-body {
+    color: #0085ff;
+  }
+
+  .view-thread {
+    margin-left: auto;
+    font-family: 'Syne', sans-serif;
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #0085ff;
+    text-decoration: none;
+  }
+
+  .view-thread:hover { text-decoration: underline; }
+
 </style>
 
 

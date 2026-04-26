@@ -114,3 +114,11 @@ export async function searchPosts(query, cursor = '') {
   });
   return JSON.parse(JSON.stringify(res.data)); // { posts: [...], cursor }
 }
+
+export async function getPostThread(uri) {
+  const res = await agent.app.bsky.feed.getPostThread({
+    uri,
+    depth: 6,
+  });
+  return JSON.parse(JSON.stringify(res.data));
+}
