@@ -7,11 +7,10 @@ const FEED_URIS = {
   'discover':      'at://did:plc:z72i7hdynmk6r22z27h6tvur/app.bsky.feed.generator/whats-hot',
   'with-friends':  'at://did:plc:z72i7hdynmk6r22z27h6tvur/app.bsky.feed.generator/with-friends',
   'videos':        'at://did:plc:z72i7hdynmk6r22z27h6tvur/app.bsky.feed.generator/thevids',
-  'whats-hot':     'at://did:plc:z72i7hdynmk6r22z27h6tvur/app.bsky.feed.generator/hot-classic',
   'best-of':       'at://did:plc:z72i7hdynmk6r22z27h6tvur/app.bsky.feed.generator/best-of-follows',
 };
 
-const DEFAULT_FEED = FEED_URIS['whats-hot'];
+const DEFAULT_FEED = FEED_URIS['discover'];
 
 export async function load({ params }) {
   const feedUri = FEED_URIS[params.uri]

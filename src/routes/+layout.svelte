@@ -1,33 +1,35 @@
-<!-- src/routes/+layout.svelte -->
 <script>
-  import { page } from '$app/stores';
+  import { page }          from '$app/stores';
   import { goto, afterNavigate } from '$app/navigation';
-  import Sidebar from '$lib/components/layout/Sidebar.svelte';
+  import Sidebar           from '$lib/components/layout/Sidebar.svelte';
+  import ComposeModal      from '$lib/components/compose/ComposeModal.svelte';
 
-  let query = $state($page.url.searchParams.get('q') ?? '');
-  let mainEl = $state(null);
+  let { data } = $props();
 
-  // persist query value in search bar even after navigation
+  let query       = $state($page.url.searchParams.get('q') ?? '');
+  let mainEl      = $state(null);
+  let showCompose = $state(false);
+
   $effect(() => {
     query = $page.url.searchParams.get('q') ?? '';
   });
 
+  afterNavigate(({ type }) => {
+    if (type !== 'popstate') {
+      mainEl?.scrollTo({ top: 0, behavior: 'instant' });
+    }
+  });
 
   function handleSearch(e) {
     if (e.key === 'Enter' && query.trim()) {
       goto(`/search?q=${encodeURIComponent(query.trim())}`);
     }
   }
-
-  // reset scroll on every navigation
-  afterNavigate(() => {
-    mainEl?.scrollTo({ top: 0, behavior: 'instant' });
-  });
-
 </script>
 
 <div class="shell">
   <Sidebar currentUri={$page.params.uri ?? ''} />
+
   <div class="main">
     <header class="topbar">
       <div class="search-wrap">
@@ -42,15 +44,41 @@
           onkeydown={handleSearch}
         />
       </div>
+
+      <div class="topbar-actions">
+        {#if data.user}
+          <button class="compose-btn" onclick={() => showCompose = true}>
+            + Post
+          </button>
+          <a href="/logout" class="user-chip">
+            {#if data.user.avatar}
+              <img src={data.user.avatar} alt={data.user.handle} />
+            {:else}
+              <span>{data.user.displayName[0]}</span>
+            {/if}
+          </a>
+        {:else}
+          <a href="/login" class="login-link">Sign in</a>
+        {/if}
+      </div>
     </header>
+
     <main bind:this={mainEl}>
       <slot />
     </main>
   </div>
 </div>
 
+{#if showCompose && data.user}
+  <ComposeModal
+    user={data.user}
+    onclose={() => showCompose = false}
+    onpost={() => showCompose = false}
+  />
+{/if}
+
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500&family=Instrument+Sans:wght@400;500&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700&family=Instrument+Sans:wght@400;500&display=swap');
 
   .shell {
     display: flex;
@@ -67,6 +95,9 @@
   }
 
   .topbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
     padding: 14px 20px;
     background: #fafaf8;
     border-bottom: 1px solid #e8e8e4;
@@ -74,6 +105,7 @@
   }
 
   .search-wrap {
+    flex: 1;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -87,7 +119,7 @@
 
   .search-wrap:focus-within {
     border-color: #0085ff;
-    box-shadow: 0 0 0 3px rgba(0, 133, 255, 0.08);
+    box-shadow: 0 0 0 3px rgba(0,133,255,0.08);
   }
 
   .search-icon {
@@ -98,9 +130,7 @@
     transition: color 0.15s;
   }
 
-  .search-wrap:focus-within .search-icon {
-    color: #0085ff;
-  }
+  .search-wrap:focus-within .search-icon { color: #0085ff; }
 
   input {
     flex: 1;
@@ -110,7 +140,6 @@
     font-family: 'Instrument Sans', sans-serif;
     font-size: 13.5px;
     color: #111;
-    letter-spacing: 0.01em;
   }
 
   input::placeholder {
@@ -120,6 +149,66 @@
     letter-spacing: 0.1em;
     text-transform: uppercase;
   }
+
+  .topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+
+  .compose-btn {
+    height: 36px;
+    padding: 0 16px;
+    background: #0085ff;
+    color: #ffffff;
+    border: none;
+    border-radius: 99px;
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    white-space: nowrap;
+  }
+
+  .compose-btn:hover  { opacity: 0.88; }
+
+  .user-chip {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1.5px solid #e8e8e4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eef5ff;
+    color: #0085ff;
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: border-color 0.12s;
+  }
+
+  .user-chip:hover  { border-color: #0085ff; }
+  .user-chip img    { width: 100%; height: 100%; object-fit: cover; }
+
+  .login-link {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #0085ff;
+    text-decoration: none;
+    padding: 0 4px;
+  }
+
+  .login-link:hover { text-decoration: underline; }
 
   main {
     flex: 1;

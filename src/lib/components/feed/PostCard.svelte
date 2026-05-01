@@ -94,7 +94,7 @@
       >
         View thread →
       </a>
-
+    {/if}
   </footer>
 </article>
 
