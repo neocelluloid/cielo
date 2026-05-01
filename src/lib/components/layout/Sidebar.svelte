@@ -16,11 +16,11 @@
 </svelte:head>
 
 <aside>
-  <div class="wordmark">
+  <a href="/" class="wordmark">
+    <div class="wordmark-dot"></div>
     <span class="wordmark-text">Cielo</span>
     <div class="wordmark-rule"></div>
-  </div>
-
+  </a>
   <nav>
     <p class="label">Feeds</p>
     {#each feeds as feed (feed.slug)}
@@ -52,12 +52,6 @@
     border-right: 1px solid #e8e8e4;
     overflow: hidden;
     font-family: 'Instrument Sans', sans-serif;
-  }
-
-  .wordmark {
-    padding: 24px 22px 20px;
-    border-bottom: 1px solid #e8e8e4;
-    flex-shrink: 0;
   }
 
   .wordmark-text {
